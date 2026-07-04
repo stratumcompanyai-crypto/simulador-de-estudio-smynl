@@ -1,0 +1,22 @@
+{
+  "name": "simulador-cedula-a1",
+  "version": "1.0.0",
+  "description": "Simulador de examen para la Cédula A1 de Agente de Seguros - CNSF México",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx -y serve@latest .",
+    "start": "npx -y serve@latest ."
+  },
+  "keywords": [
+    "simulador",
+    "examen",
+    "cedula-a1",
+    "seguros",
+    "CNSF",
+    "agente-seguros",
+    "mexico"
+  ],
+  "author": "Emiliano Covarrubias",
+  "license": "MIT",
+  "private": true
+}
