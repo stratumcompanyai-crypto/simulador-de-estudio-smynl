@@ -49,21 +49,21 @@
                     <div class="mode-card__icon">📘</div>
                     <h3>Módulo 1</h3>
                     <p>40 preguntas · 40 min</p>
-                    <span class="mode-card__tag">Marco Legal y Técnico</span>
+                    <span class="mode-card__tag">Aspectos Generales</span>
                 </button>
 
                 <button class="mode-card" onclick="startExam([2])">
                     <div class="mode-card__icon">📗</div>
                     <h3>Módulo 2</h3>
                     <p>28 preguntas · 60 min</p>
-                    <span class="mode-card__tag">Productos de Seguros</span>
+                    <span class="mode-card__tag" style="white-space: normal; line-height: 1.2;">Riesgos Individuales de Seguros de Personas</span>
                 </button>
 
                 <button class="mode-card" onclick="startExam([3])">
                     <div class="mode-card__icon">📙</div>
                     <h3>Módulo 3</h3>
                     <p>20 preguntas · 32 min</p>
-                    <span class="mode-card__tag">Sistema Financiero y Ética</span>
+                    <span class="mode-card__tag" style="white-space: normal; line-height: 1.2;">Sistemas y Mercados Financieros</span>
                 </button>
             </div>
         </div>
@@ -72,6 +72,12 @@
         <!-- EXAM SCREEN (hidden until mode is selected)  -->
         <!-- ============================================ -->
         <div id="exam-screen" class="exam-screen" style="display: none;">
+            
+            <div style="margin-bottom: 1.5rem;">
+                <button type="button" class="btn-retry" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.9rem;" onclick="location.reload()">
+                    ← Volver al inicio
+                </button>
+            </div>
 
             <!-- Module Tabs (hidden in single-module mode) -->
             <div class="tabs" id="tabs-container">

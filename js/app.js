@@ -86,6 +86,7 @@ function startExam(modules) {
         startTimer();
     }
     updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function prepareQuestions() {
@@ -216,6 +217,7 @@ function switchTab(modNum) {
 
     startTimer();
     updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ========================================
@@ -296,8 +298,25 @@ function renderQuestions() {
 // Grading
 // ========================================
 function gradeQuiz(force = false) {
+    // Validation: ensure all questions are answered
     if (!force) {
-        if (!confirm("¿Estás seguro de finalizar el examen? Asegúrate de haber respondido tus módulos seleccionados.")) {
+        let allAnswered = true;
+        let unansweredCount = 0;
+        
+        activeQuestions.forEach((item, i) => {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            if (!selected) {
+                allAnswered = false;
+                unansweredCount++;
+            }
+        });
+
+        if (!allAnswered) {
+            alert(`No puedes finalizar el examen aún. Te faltan ${unansweredCount} pregunta(s) por responder.`);
+            return;
+        }
+
+        if (!confirm("¿Estás seguro de finalizar el examen y ver tu calificación?")) {
             return;
         }
     }
