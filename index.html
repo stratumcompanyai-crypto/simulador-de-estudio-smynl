@@ -27,75 +27,108 @@
                 Preparación Certificación CNSF
             </div>
             <h1>Simulador Examen Cédula A1</h1>
-            <p class="subtitle">88 Reactivos Únicos · Sistema de Tiempos por Módulo · Retroalimentación Detallada</p>
+            <p class="subtitle">Preguntas dinámicas · Redacciones únicas cada intento · Retroalimentación detallada</p>
         </header>
 
-        <!-- Module Tabs -->
-        <div class="tabs" id="tabs-container">
-            <button class="tab-btn active" id="tab-btn-1" onclick="switchTab(1)">
-                Módulo 1<small>40 Minutos · 40 preguntas</small>
-            </button>
-            <button class="tab-btn" id="tab-btn-2" onclick="switchTab(2)">
-                Módulo 2<small>60 Minutos · 28 preguntas</small>
-            </button>
-            <button class="tab-btn" id="tab-btn-3" onclick="switchTab(3)">
-                Módulo 3<small>32 Minutos · 20 preguntas</small>
-            </button>
-        </div>
+        <!-- ============================================ -->
+        <!-- MODE SELECTION SCREEN                        -->
+        <!-- ============================================ -->
+        <div id="mode-screen" class="mode-screen">
+            <h2 class="mode-title">Elige tu modo de estudio</h2>
+            <p class="mode-subtitle">Selecciona examen completo o practica un módulo individual</p>
 
-        <!-- Timer Bar -->
-        <div class="timer-bar" id="timer-bar">
-            <div class="timer-label">
-                <span id="module-label-timer">Módulo 1</span> — Tiempo Restante
-            </div>
-            <div class="timer-text" id="timer">40:00</div>
-        </div>
+            <div class="mode-grid">
+                <button class="mode-card mode-card--full" onclick="startExam([1,2,3])">
+                    <div class="mode-card__icon">📋</div>
+                    <h3>Examen Completo</h3>
+                    <p>3 módulos · 88 preguntas · 132 min</p>
+                    <span class="mode-card__badge">Simula el examen real</span>
+                </button>
 
-        <!-- Progress Bar -->
-        <div class="progress-bar-container">
-            <div class="progress-bar-fill" id="progress-fill"></div>
-        </div>
-
-        <!-- Quiz Form -->
-        <form id="quiz-form" onsubmit="return false;">
-            <div id="tab-1" class="tab-content active"></div>
-            <div id="tab-2" class="tab-content"></div>
-            <div id="tab-3" class="tab-content"></div>
-
-            <button type="button" class="btn" id="submit-btn" onclick="gradeQuiz(false)">
-                Finalizar Examen y Ver Calificación
-            </button>
-        </form>
-
-        <!-- Score Board -->
-        <div id="score-board" class="score-board">
-            <h2 id="score-title">¡Examen Terminado!</h2>
-            <div id="score-text" class="score-summary"></div>
-
-            <div class="module-scores">
-                <div class="module-score-card">
+                <button class="mode-card" onclick="startExam([1])">
+                    <div class="mode-card__icon">📘</div>
                     <h3>Módulo 1</h3>
-                    <p id="m1-res">0/40 (0%)</p>
-                </div>
-                <div class="module-score-card">
+                    <p>40 preguntas · 40 min</p>
+                    <span class="mode-card__tag">Marco Legal y Técnico</span>
+                </button>
+
+                <button class="mode-card" onclick="startExam([2])">
+                    <div class="mode-card__icon">📗</div>
                     <h3>Módulo 2</h3>
-                    <p id="m2-res">0/28 (0%)</p>
-                </div>
-                <div class="module-score-card">
+                    <p>28 preguntas · 60 min</p>
+                    <span class="mode-card__tag">Productos de Seguros</span>
+                </button>
+
+                <button class="mode-card" onclick="startExam([3])">
+                    <div class="mode-card__icon">📙</div>
                     <h3>Módulo 3</h3>
-                    <p id="m3-res">0/20 (0%)</p>
+                    <p>20 preguntas · 32 min</p>
+                    <span class="mode-card__tag">Sistema Financiero y Ética</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- EXAM SCREEN (hidden until mode is selected)  -->
+        <!-- ============================================ -->
+        <div id="exam-screen" class="exam-screen" style="display: none;">
+
+            <!-- Module Tabs (hidden in single-module mode) -->
+            <div class="tabs" id="tabs-container">
+                <button class="tab-btn active" id="tab-btn-1" onclick="switchTab(1)">
+                    Módulo 1<small>40 Minutos · 40 preguntas</small>
+                </button>
+                <button class="tab-btn" id="tab-btn-2" onclick="switchTab(2)">
+                    Módulo 2<small>60 Minutos · 28 preguntas</small>
+                </button>
+                <button class="tab-btn" id="tab-btn-3" onclick="switchTab(3)">
+                    Módulo 3<small>32 Minutos · 20 preguntas</small>
+                </button>
+            </div>
+
+            <!-- Timer Bar -->
+            <div class="timer-bar" id="timer-bar">
+                <div class="timer-label">
+                    <span id="module-label-timer">Módulo 1</span> — Tiempo Restante
                 </div>
+                <div class="timer-text" id="timer">40:00</div>
             </div>
 
-            <div class="topics-list" id="feedback-topics">
-                <h3>🎯 Áreas de Oportunidad</h3>
-                <p>Basado en tus errores, te recomendamos estudiar a fondo los siguientes temas:</p>
-                <ul id="topics-ul"></ul>
+            <!-- Progress Bar -->
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progress-fill"></div>
             </div>
 
-            <button type="button" class="btn-retry" onclick="location.reload()">
-                Intentar de nuevo
-            </button>
+            <!-- Quiz Form -->
+            <form id="quiz-form" onsubmit="return false;">
+                <div id="tab-1" class="tab-content active"></div>
+                <div id="tab-2" class="tab-content"></div>
+                <div id="tab-3" class="tab-content"></div>
+
+                <button type="button" class="btn" id="submit-btn" onclick="gradeQuiz(false)">
+                    Finalizar Examen y Ver Calificación
+                </button>
+            </form>
+
+            <!-- Score Board -->
+            <div id="score-board" class="score-board">
+                <h2 id="score-title">¡Examen Terminado!</h2>
+                <div id="score-text" class="score-summary"></div>
+
+                <div class="module-scores" id="module-scores-container">
+                    <!-- Dynamically populated based on selected modules -->
+                </div>
+
+                <div class="topics-list" id="feedback-topics">
+                    <h3>🎯 Áreas de Oportunidad</h3>
+                    <p>Basado en tus errores, te recomendamos estudiar a fondo los siguientes temas:</p>
+                    <ul id="topics-ul"></ul>
+                </div>
+
+                <button type="button" class="btn-retry" onclick="location.reload()">
+                    Intentar de nuevo
+                </button>
+            </div>
         </div>
 
         <!-- Footer -->
