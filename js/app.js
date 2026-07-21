@@ -444,4 +444,19 @@ function gradeQuiz(force = false) {
 
     document.getElementById('score-board').style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Registrar el intento en la cuenta del usuario (si hay sesión iniciada)
+    if (typeof window.simulatorOnGraded === 'function') {
+        const perModule = {};
+        selectedModules.forEach(m => {
+            perModule['m' + m] = { aciertos: scoresByModule[m], total: totalsByModule[m] };
+        });
+        window.simulatorOnGraded({
+            modules: selectedModules,
+            perModule: perModule,
+            score: score,
+            total: totalQuestions,
+            percentage: Math.round(percentage * 10) / 10
+        });
+    }
 }
