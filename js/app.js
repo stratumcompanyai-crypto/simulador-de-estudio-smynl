@@ -19,6 +19,14 @@ const MODULE_TIMES = {
     3: 32 * 60
 };
 
+// Fixed exam size per module (the question pool can be larger;
+// each attempt samples this many, so attempts don't repeat the same set)
+const EXAM_SIZES = {
+    1: 40,
+    2: 28,
+    3: 20
+};
+
 let moduleTimeRemaining = {};
 
 // ========================================
@@ -89,15 +97,46 @@ function startExam(modules) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// Stratified sample: keeps every attempt at EXAM_SIZES[modNum] questions while
+// drawing a different subset of the pool, proportional to each topic's weight
+function sampleModuleQuestions(modNum) {
+    const pool = qData.filter(q => q.m === modNum);
+    const size = EXAM_SIZES[modNum] || pool.length;
+    if (pool.length <= size) return shuffleArray([...pool]);
+
+    const byTopic = {};
+    pool.forEach(q => {
+        (byTopic[q.t] = byTopic[q.t] || []).push(q);
+    });
+
+    // Largest-remainder quotas so topic mix mirrors the pool's composition
+    const topics = Object.keys(byTopic);
+    const quotas = topics.map(t => {
+        const exact = size * byTopic[t].length / pool.length;
+        return { t, base: Math.floor(exact), frac: exact - Math.floor(exact) };
+    });
+    let assigned = quotas.reduce((s, q) => s + q.base, 0);
+    quotas.sort((a, b) => b.frac - a.frac);
+    for (let i = 0; assigned < size; i = (i + 1) % quotas.length) {
+        if (quotas[i].base < byTopic[quotas[i].t].length) {
+            quotas[i].base++;
+            assigned++;
+        }
+    }
+
+    const picked = [];
+    quotas.forEach(({ t, base }) => {
+        picked.push(...shuffleArray([...byTopic[t]]).slice(0, base));
+    });
+    return shuffleArray(picked);
+}
+
 function prepareQuestions() {
     activeQuestions = [];
-    
-    // For each selected module, get its questions, pick a variant, shuffle options
+
+    // For each selected module, sample the exam-sized subset, pick a variant, shuffle options
     selectedModules.forEach(modNum => {
-        let modQuestions = qData.filter(q => q.m === modNum);
-        
-        // Shuffle questions within the module
-        modQuestions = shuffleArray([...modQuestions]);
+        let modQuestions = sampleModuleQuestions(modNum);
         
         modQuestions.forEach(qItem => {
             // Pick a random variant
@@ -122,7 +161,8 @@ function prepareQuestions() {
                 q: variant.q,
                 options: optionsObj.map(o => o.text),
                 c: newCorrectIndex,
-                e: qItem.e
+                // Math variants carry their own worked solution; fall back to the shared one
+                e: variant.e || qItem.e
             });
         });
     });
